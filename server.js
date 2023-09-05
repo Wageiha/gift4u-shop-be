@@ -22,8 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Home page
 app.get("/", async (req, res) => {
- /*  const numUsers = await userModel.estimatedDocumentCount();
-  res.json(numUsers); */
+  const numUsers = await userModel.estimatedDocumentCount();
+  res.json(numUsers);
 });
 
 // Routes
