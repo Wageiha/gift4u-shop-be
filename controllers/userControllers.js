@@ -1,6 +1,6 @@
 import userModel from "../models/userModel.js";
 import profileModel from "../models/profileModel.js";
-import googleProfileModel from "../models/googleProfileModel.js"
+import googleProfileModel from "../models/googleProfileModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -43,7 +43,7 @@ export const signUpController = async (req, res, next) => {
     const user = new userModel({
       name,
       email,
-      hashedPassword,
+      hashedPassword
     });
 
     const newUser = await user.save();
@@ -52,7 +52,7 @@ export const signUpController = async (req, res, next) => {
 
     const profile = new profileModel({
       owner: newUser._id,
-      name: newUser.name,
+      name: newUser.name
     });
 
     const newProfile = await profile.save();
@@ -61,7 +61,7 @@ export const signUpController = async (req, res, next) => {
     const payload = {
       name: name,
       email: email,
-      userId: newUser._id,
+      userId: newUser._id
     };
 
     const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: 2 * 60 * 60 });
@@ -69,13 +69,13 @@ export const signUpController = async (req, res, next) => {
     // Declaring the variables that we can pass to the function that is responsible for sending the email
     const subject = "Email Verification";
     const plainText = `  Dear ${name}! We have received your request to register by our Gift Shop. Please follow
-           the link to verify your email:  https://gift4u-app.onrender.com/confirm-email/${token}`;
+           the link to verify your email:  ${process.env.FE_URL}/confirm-email/${token}`;
 
     const htmlText = `
                <h2>Dear ${name}!</h2>
                <p>We have received your request to register by our Gift4U Shop. Please follow
                the link to verify your email:
-                   <a href= "https://gift4u-app.onrender.com/confirm-email/${token}">Click Here! </a>
+                   <a href= "${process.env.FE_URL}/confirm-email/${token}">Click Here! </a>
                </p>`;
     // calling the function emailSender to send an email to the user.
     const emailStatus = await emailSender(email, subject, plainText, htmlText);
@@ -136,12 +136,15 @@ export const loginController = async (req, res, next) => {
       const payload = {
         email: email,
         name: userDataFromDB.name,
-        userId: userDataFromDB._id,
+        userId: userDataFromDB._id
       };
 
       const token = jwt.sign(payload, JWT_SECRET_KEY);
 
-      const profileDataFromDB = await profileModel.findOne({ owner: userDataFromDB._id }, {avatar: 1});  
+      const profileDataFromDB = await profileModel.findOne(
+        { owner: userDataFromDB._id },
+        { avatar: 1 }
+      );
 
       res.status(201).json({
         message: `Hi ${payload.name}, you are logged in successfully.`,
@@ -164,21 +167,25 @@ export const loginController = async (req, res, next) => {
 export const authorizeUser = async (req, res, next) => {
   try {
     if (req.localData) {
-      const result = await profileModel.findOne({
-        owner: req.localData.userId,
-      }, { owner: 1, name: 1, avatar: 1 });
-     
+      const result = await profileModel.findOne(
+        {
+          owner: req.localData.userId
+        },
+        { owner: 1, name: 1, avatar: 1 }
+      );
+
       res.status(200).json(result);
-    } 
-    else if (req.googleData) {
-      const result = await googleProfileModel.findOne({
-        owner: req.googleData.userId,
-      }, { owner: 1, name: 1, avatar: 1 });
-   
+    } else if (req.googleData) {
+      const result = await googleProfileModel.findOne(
+        {
+          owner: req.googleData.userId
+        },
+        { owner: 1, name: 1, avatar: 1 }
+      );
+
       if (result) {
         res.status(200).json(result);
-      } 
-      else {
+      } else {
         const googleProfile = new googleProfileModel({
           owner: req.googleData.userId,
           name: req.googleData.name,
@@ -209,7 +216,7 @@ export const resetPasswordController = async (req, res, next) => {
     const payload = {
       name: alreadyExist.name,
       email: alreadyExist.email,
-      userId: alreadyExist._id,
+      userId: alreadyExist._id
     };
 
     // Using the hashedPassword as a private key to make that token, we send to the user by email, to be used only once.
@@ -219,12 +226,12 @@ export const resetPasswordController = async (req, res, next) => {
 
     // Declaring the variables that we can pass to the function that is responsible for sending the email to reset the password
     const subject = "Gift4U Reset Password";
-    const plainText = `  Dear ${alreadyExist.name}! We have received your request to reset the password of your Gift4U account. Please follow the link to verify your email:  https://gift4u-app.onrender.com/reset-password/${alreadyExist.email}/${token}`;
+    const plainText = `  Dear ${alreadyExist.name}! We have received your request to reset the password of your Gift4U account. Please follow the link to verify your email:  ${process.env.FE_URL}/reset-password/${alreadyExist.email}/${token}`;
 
     const htmlText = `
         <h2>Dear ${alreadyExist.name}!</h2>
         <p>We have received your request to reset the password of your Gift4U account. Please follow the link to verify your email:
-            <a href= "https://gift4u-app.onrender.com/reset-password/${alreadyExist.email}/${token}">Click Here! </a>
+            <a href= "${process.env.FE_URL}/reset-password/${alreadyExist.email}/${token}">Click Here! </a>
         </p>`;
 
     // calling the function emailSender to send an email to the user.
@@ -290,7 +297,7 @@ export const PasswordRecoveryController = async (req, res, next) => {
     const currentUser = await userModel.findOneAndUpdate(
       { email },
       {
-        hashedPassword: newHashedPassword,
+        hashedPassword: newHashedPassword
       }
     );
 
@@ -340,7 +347,7 @@ export const changePasswordController = async (req, res, next) => {
     const currentUser = await userModel.findByIdAndUpdate(
       req.localData.userId,
       {
-        hashedPassword: newHashedPassword,
+        hashedPassword: newHashedPassword
       }
     );
 
