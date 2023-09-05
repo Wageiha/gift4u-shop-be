@@ -69,13 +69,13 @@ export const signUpController = async (req, res, next) => {
     // Declaring the variables that we can pass to the function that is responsible for sending the email
     const subject = "Email Verification";
     const plainText = `  Dear ${name}! We have received your request to register by our Gift Shop. Please follow
-           the link to verify your email:  http://localhost:3000/confirm-email/${token}`;
+           the link to verify your email:  https://gift4u-app.onrender.com/confirm-email/${token}`;
 
     const htmlText = `
                <h2>Dear ${name}!</h2>
                <p>We have received your request to register by our Gift4U Shop. Please follow
                the link to verify your email:
-                   <a href= "http://localhost:3000/confirm-email/${token}">Click Here! </a>
+                   <a href= "https://gift4u-app.onrender.com/confirm-email/${token}">Click Here! </a>
                </p>`;
     // calling the function emailSender to send an email to the user.
     const emailStatus = await emailSender(email, subject, plainText, htmlText);
@@ -219,12 +219,12 @@ export const resetPasswordController = async (req, res, next) => {
 
     // Declaring the variables that we can pass to the function that is responsible for sending the email to reset the password
     const subject = "Gift4U Reset Password";
-    const plainText = `  Dear ${alreadyExist.name}! We have received your request to reset the password of your Gift4U account. Please follow the link to verify your email:  http://localhost:3000/reset-password/${alreadyExist.email}/${token}`;
+    const plainText = `  Dear ${alreadyExist.name}! We have received your request to reset the password of your Gift4U account. Please follow the link to verify your email:  https://gift4u-app.onrender.com/reset-password/${alreadyExist.email}/${token}`;
 
     const htmlText = `
         <h2>Dear ${alreadyExist.name}!</h2>
         <p>We have received your request to reset the password of your Gift4U account. Please follow the link to verify your email:
-            <a href= "http://localhost:3000/reset-password/${alreadyExist.email}/${token}">Click Here! </a>
+            <a href= "https://gift4u-app.onrender.com/reset-password/${alreadyExist.email}/${token}">Click Here! </a>
         </p>`;
 
     // calling the function emailSender to send an email to the user.

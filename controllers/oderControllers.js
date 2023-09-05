@@ -38,11 +38,11 @@ const generateAccessToken = async () => {
  const createOrder = async (cart) => {
     // use the cart information passed from the front-end to calculate the purchase unit details
 
-    /* const totalPrice = cart.reduce((acc,el,index)=>{
-        return acc + el.itemPrice*el.quantity
-      },0) */
+    const totalPrice = cart.reduce((acc,el,index)=>{
+        return acc + el.price*el.quantity
+      },0)
 
-    console.log("shopping cart information passed from the frontend createOrder() callback:", cart);
+     console.log("shopping cart information passed from the frontend createOrder() callback:", totalPrice); 
   
     const accessToken = await generateAccessToken();
     const url = `${base}/v2/checkout/orders`;
@@ -52,7 +52,7 @@ const generateAccessToken = async () => {
         {
           amount: {
             currency_code: "USD",
-            value: 200.00,
+            value: totalPrice,
           },
         },
       ],
@@ -117,7 +117,7 @@ export const createOrderController = async (req, res) =>{
     try {
         // use the cart information passed from the front-end to calculate the order amount detals
         const { cart } = req.body;
-        console.log(cart);
+       /*  console.log(cart); */
         const { jsonResponse, httpStatusCode } = await createOrder(cart);
         res.status(httpStatusCode).json(jsonResponse);
       } catch (error) {
